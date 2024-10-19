@@ -28,10 +28,10 @@ class TicketResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('status')
-                    ->options(Ticket::STATUS)
+                    ->options(self::$model::STATUS)
                     ->required(),
                 Forms\Components\Select::make('priority')
-                    ->options(Ticket::PRIORITY)
+                    ->options(self::$model::PRIORITY)
                     ->required(),
                 Forms\Components\Textarea::make('comment')
                     ->columnSpanFull(),
@@ -49,10 +49,10 @@ class TicketResource extends Resource
                     ->description(fn(Ticket $record): string => $record->description ?? '')
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('status')
-                    ->options(Ticket::STATUS)
+                    ->options(self::$model::STATUS)
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('priority')
-                    ->options(Ticket::PRIORITY)
+                    ->options(self::$model::PRIORITY)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('assignedTo.name')
                     ->numeric()

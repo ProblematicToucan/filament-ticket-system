@@ -17,12 +17,7 @@ class PermissionsRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return PermissionResource::form($form);
     }
 
     public function table(Table $table): Table

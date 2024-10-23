@@ -13,7 +13,7 @@ class CreateTicket extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['assigned_by'] = Auth::user()->id;
+        $data['assigned_by'] = Auth::id();
 
         return $data;
     }

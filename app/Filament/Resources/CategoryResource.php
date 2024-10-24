@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryResource extends Resource
 {
@@ -28,7 +29,7 @@ class CategoryResource extends Resource
                     ->afterStateUpdated(function (Set $set, ?string $state) {
                         $set('slug', str()->slug($state));
                     })
-                    ->live()
+                    ->live(onBlur: true)
                     ->required(),
                 Forms\Components\TextInput::make('slug')
                     ->required(),
@@ -39,14 +40,19 @@ class CategoryResource extends Resource
 
     public static function table(Table $table): Table
     {
+        /**
+         * @var \App\Models\User|null $user
+         */
+        $user = Auth::user();
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('is_active')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->disabled(!$user->hasPermission('category_update')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

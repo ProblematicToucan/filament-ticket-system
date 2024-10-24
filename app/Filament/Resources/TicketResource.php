@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class TicketResource extends Resource
 {
@@ -43,6 +44,11 @@ class TicketResource extends Resource
 
     public static function table(Table $table): Table
     {
+        /**
+         * @var \App\Models\User $user
+         */
+        $user = Auth::user();
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
@@ -50,9 +56,13 @@ class TicketResource extends Resource
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('status')
                     ->options(self::$model::STATUS)
+                    ->disabled(!$user->hasPermission('ticket_update'))
+                    ->selectablePlaceholder(false)
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('priority')
                     ->options(self::$model::PRIORITY)
+                    ->disabled(!$user->hasPermission('ticket_update'))
+                    ->selectablePlaceholder(false)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('assignedTo.name')
                     ->numeric()
@@ -60,7 +70,8 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('assignedBy.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextInputColumn::make('comment'),
+                Tables\Columns\TextInputColumn::make('comment')
+                    ->disabled(!$user->hasPermission('ticket_update')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
